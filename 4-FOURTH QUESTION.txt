@@ -1,0 +1,38 @@
+WITH t1 AS
+  (SELECT Genre.Name AS Genre_name,
+          count(*) AS Track_count,
+          sum(InvoiceLine.UnitPrice * InvoiceLine.Quantity) AS Total_sales_of_genre
+   FROM Invoice
+   JOIN InvoiceLine ON InvoiceLine.InvoiceId = Invoice.InvoiceId
+   JOIN Track ON Track.TrackId = InvoiceLine.TrackId
+   JOIN Genre ON Genre.GenreId = Track.GenreId
+   WHERE strftime('%Y', Invoice.InvoiceDate) ='2013'
+   GROUP BY 1
+   ORDER BY 3 DESC
+   LIMIT 3),
+     t2 AS
+  (SELECT Genre.Name AS Genre_name,
+          count(*) AS Track_count,
+          sum(InvoiceLine.UnitPrice * InvoiceLine.Quantity) AS Total_sales_of_genre
+   FROM Invoice
+   JOIN InvoiceLine ON InvoiceLine.InvoiceId = Invoice.InvoiceId
+   JOIN Track ON Track.TrackId = InvoiceLine.TrackId
+   JOIN Genre ON Genre.GenreId = Track.GenreId
+   WHERE strftime('%Y', Invoice.InvoiceDate) ='2012'
+   GROUP BY 1
+   ORDER BY 3 DESC
+   LIMIT 3)
+SELECT t1.Genre_name,
+       t1.Track_count AS Sold_Tracks_2013_count,
+       t2.Track_count AS Sold_Track_2012_count,
+       t1.Total_sales_of_genre AS Total_Sales_of_genre_at_2013,
+       t2.Total_sales_of_genre AS Total_sales_of_genre_at_2012
+FROM t1
+JOIN t2 ON t1.genre_name = t2.Genre_name
+JOIN Genre ON Genre.Name = t1.Genre_name
+JOIN Track ON track.GenreId = Genre.GenreId
+JOIN InvoiceLine ON InvoiceLine.TrackId = Track.TrackId
+JOIN Invoice ON Invoice.InvoiceId = InvoiceLine.InvoiceId
+GROUP BY 1,
+         2
+ORDER BY 2 DESC

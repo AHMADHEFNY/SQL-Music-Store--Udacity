@@ -1,0 +1,52 @@
+WITH t1 AS
+  (SELECT COUNTRY_NAME,
+          Total_sales,
+          Invoice_count
+   FROM
+     (SELECT ROUND(sum(total), 1) AS Total_sales,
+             count(*) AS Invoice_count,
+             CASE
+                 WHEN BillingCountry not in
+                        (SELECT Country
+                         FROM
+                           (SELECT COUNT(*),
+                                   Country
+                            FROM Customer
+                            GROUP BY Country
+                            ORDER BY 1 DESC
+                            LIMIT 5) sub) THEN 'OTHERS'
+                 WHEN BillingCountry IN
+                        (SELECT Country
+                         FROM
+                           (SELECT COUNT(*),
+                                   Country
+                            FROM Customer
+                            GROUP BY Country
+                            ORDER BY 1 DESC
+                            LIMIT 5) sub) THEN BillingCountry
+             END AS COUNTRY_NAME
+      FROM Invoice
+      GROUP BY 3)),
+     T2 AS
+  (SELECT count(*) Customer_count,
+          CASE
+              WHEN Country IN
+                     (SELECT Country
+                      FROM
+                        (SELECT COUNT(*),
+                                Country
+                         FROM Customer
+                         GROUP BY Country
+                         ORDER BY 1 DESC
+                         LIMIT 5)) THEN country
+              ELSE 'OTHERS'
+          END AS Country_name2
+   FROM Customer
+   GROUP BY 2
+   ORDER BY 1 DESC)
+SELECT COUNTRY_NAME || ' (' || Customer_count || ') ' AS COUNTRIES,
+       Total_sales,
+       Invoice_count
+FROM t1
+JOIN t2 ON COUNTRY_NAME = Country_name2
+ORDER BY total_sales DESC
