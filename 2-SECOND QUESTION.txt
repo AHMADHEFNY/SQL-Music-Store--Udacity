@@ -7,8 +7,7 @@ WITH t1 AS
    JOIN Customer ON Customer.SupportRepId = Employee.EmployeeId
    JOIN Invoice ON Invoice.CustomerId=Customer.CustomerId
    WHERE YEAR = '2013'
-   GROUP BY 1,
-            2),
+   GROUP BY 1,2),
      t2 AS
   (SELECT strftime('%Y', Invoice.InvoiceDate) AS YEAR,
           Employee.EmployeeId AS id,
@@ -22,11 +21,7 @@ WITH t1 AS
    JOIN Invoice ON Invoice.CustomerId=Customer.CustomerId
    JOIN InvoiceLine ON InvoiceLine.InvoiceId = Invoice.InvoiceId
    WHERE YEAR = '2013'
-   GROUP BY 1,
-            2,
-            3,
-            4,
-            5)
+   GROUP BY 1,2,3,4,5)
 SELECT t1.year,
        t1.ID,
        t2.First_Name,
