@@ -6,7 +6,7 @@ WITH t1 AS
    JOIN InvoiceLine ON InvoiceLine.InvoiceId = Invoice.InvoiceId
    JOIN Track ON Track.TrackId = InvoiceLine.TrackId
    JOIN Genre ON Genre.GenreId = Track.GenreId
-   WHERE strftime('%Y', Invoice.InvoiceDate) ='2013'
+   WHERE strftime('%Y', Invoice.InvoiceDate) ='2013' 
    GROUP BY 1
    ORDER BY 3 DESC
    LIMIT 3),
