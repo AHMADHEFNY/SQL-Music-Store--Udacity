@@ -33,4 +33,4 @@ SELECT t1.year,
        no_tracks/no_invoice AS avg_tracks_per_invoice
 FROM t1
 JOIN t2 ON t1.id = t2.id
-GROUP BY 2
+GROUP BY 2 
